@@ -1,0 +1,142 @@
+#include <iostream>
+using namespace std;
+
+
+int find(string name[], int count, string recipient) {
+	for (int i = 0; i < count; i++) {
+		if (name[i] == recipient)
+			return i;
+	}
+	return -1;
+}
+
+void menu1(string name[], int balance[], int count) {
+	if (count == 0) {
+		cout << "현재 등록된 계좌가 없습니다.\n";
+		return;
+	}
+	for (int i = 0; i < count; i++) {
+		cout << "이름: " << name[i] << "      | 잔액: " << balance[i]<< endl;
+	}
+}
+
+void menu2(string name[], int balance[], int& count) {
+	cout << "계좌 이름을 입력하세요: ";
+	cin >> name[count];
+	cout << "초기 금액을 입력하세요: ";
+	cin >> balance[count];
+
+	count++;
+	cout << "계좌 등록이 완료되었습니다.\n";
+}
+
+void menu3(string* name, int* balance, int count) {
+	string recipient;
+	cout << "계좌 이름을 입력하세요: ";
+	cin >> recipient;
+
+	int return_value = find(name, count, recipient);
+
+	if (return_value == 1) {
+		cout << "사용자가 존재하지 않습니다.\n";
+		return;
+	}
+
+	cout << "현재 잔액; " << *(balance + return_value) << endl;
+
+	int choice;
+	cout << "1. 입금  2. 출금   | 1또는 2를 입력하세요: ";
+	cin >> choice;
+
+	int money;
+	cout << "금액을 입력하세요: ";
+	cin >> money;
+
+	if (choice == 1) {
+		*(balance + return_value) += money;
+		cout << "입금이 완료되었씁니다!\n";
+	}
+
+	else if (choice == 2) {
+		if (*(balance + return_value) < money) {
+			cout << "잔액이 부족합니다\n";
+		}
+		else {
+			*(balance + return_value) -= money;
+			cout << "출금이 완료되었습니다!\n";
+		}
+	}
+	else {
+		cout << "올바른 번호를 입력하세요.";
+	}
+	
+}
+
+
+void menu4(string name[], int balance[], int count) {
+	string send;
+	string receive;
+	int sendnum = find(name, count, send);
+	int receivenum = find(name, count, receive);
+
+	cout << "보내는 계좌의 이름을 입력하세요: ";
+	cin >> send;
+	cout << "받을 계좌의 이름을 입력하세요: ";
+	cin >> receive;
+
+	if (sendnum == -1 || receivenum == -1) {
+		cout << "계좌 이름이 잘못되었습니다.\n";
+		return;
+	}
+
+	int money;
+	cout << "이체할 금액을 입력하세요: ";
+	cin >> money;
+
+	if (balance[sendnum] < money) {
+		cout << "잔액이 부족합니다.\n";
+		return;
+	}
+	balance[sendnum] -= money;
+	balance[receivenum] += money;
+
+	cout << "이체가 완료되었습니다!\n";
+}
+
+int main() {
+	string name[100];
+	int balance[100];
+	int count = 0;
+	int menu;
+
+	while (1) {
+		cout << "은행 계좌 관리 시스템\n";
+		cout << "1. 현재 등록된 계좌 리스트 보기\n";
+		cout << "2. 신규 계좌 등록\n";
+		cout << "3. 입금 및 출금\n";
+		cout << "4. 계좌 간 이체\n";
+		cout << "5. 프로그램 종료\n";
+		cout << "메뉴를 선택하세요: ";
+		cin >> menu;
+
+		switch (menu) {
+		case 1:
+			menu1(name, balance, count);
+			break;
+		case 2:
+			menu2(name, balance, count);
+			break;
+		case 3:
+			menu3(name, balance, count);
+			break;
+		case 4:
+			menu4(name, balance, count);
+			break;
+		case 5:
+			cout << "프로그램을 종료합니다\n";
+			return 0;
+		default:
+			cout << "올바른 번호를 입력하세요 \n";
+		}
+	}
+}
