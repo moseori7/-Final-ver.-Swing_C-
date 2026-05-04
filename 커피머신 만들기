@@ -13,9 +13,9 @@ private:
     int shotTime;
 
 public:
-    CoffeeMachine();                      // 기본 생성자
-    CoffeeMachine(int w, int i, int b, int c); // 매개변수 생성자
-    ~CoffeeMachine();                     // 소멸자
+    CoffeeMachine();                      
+    CoffeeMachine(int w, int i, int b, int c);
+    ~CoffeeMachine();                    
 };
 
 // 기본 생성자
