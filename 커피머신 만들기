@@ -13,12 +13,15 @@ private:
     int shotTime;
 
 public:
-    CoffeeMachine();                      
+    CoffeeMachine();
     CoffeeMachine(int w, int i, int b, int c);
-    ~CoffeeMachine();                    
+    ~CoffeeMachine();
+
+    void showInfo();
+    void makeCoffee();
 };
 
-// 기본 생성자
+// 기본 설정들!
 CoffeeMachine::CoffeeMachine() {
     waterAmount = 0;
     iceAmount = 0;
@@ -32,7 +35,7 @@ CoffeeMachine::CoffeeMachine() {
     cout << "--- 에스프레소 머신이 초기화되었습니다 ---" << endl;
 }
 
-// 매개변수 생성자
+// 매개변수 설정들!
 CoffeeMachine::CoffeeMachine(int w, int i, int b, int c) {
     waterAmount = w;
     iceAmount = i;
@@ -46,7 +49,45 @@ CoffeeMachine::CoffeeMachine(int w, int i, int b, int c) {
     cout << "--- 재료가 설정된 에스프레소 머신이 생성되었습니다 ---" << endl;
 }
 
-// 소멸자
+// 머신 종료! 소멸자!
 CoffeeMachine::~CoffeeMachine() {
     cout << "--- 에스프레소 머신이 종료됩니다 ---" << endl;
+}
+
+// 커피 머신의 상태를 출력하자! (재고 확인)
+void CoffeeMachine::showInfo() {
+    cout << "물: " << waterAmount << "ml" << endl;
+    cout << "얼음: " << iceAmount << "개" << endl;
+    cout << "원두: " << beanAmount << "g" << endl;
+    cout << "컵 용량: " << cupAmount << "ml" << endl;
+}
+
+// 커피를 만들어보자
+void CoffeeMachine::makeCoffee() {
+    cout << "\n커피를 만듭니다." << endl;
+
+    if (waterAmount <= 0 || iceAmount <= 0 || beanAmount <= 0 || cupAmount <= 0) {
+        cout << "재료가 부족하여 커피를 만들 수 없습니다." << endl;
+        return;
+    }
+
+    cout << grindTime << "초 동안 원두를 갑니다." << endl;
+    cout << tampLevel << "단계 강도로 탬핑합니다." << endl;
+    cout << shotTime << "초 동안 샷을 내립니다." << endl;
+    cout << "컵에 얼음 " << iceAmount << "개를 넣습니다." << endl;
+    cout << "물을 넣어 커피를 완성합니다." << endl;
+}
+
+int main() {
+    CoffeeMachine coffee1;
+    coffee1.showInfo();
+    coffee1.makeCoffee();
+
+    cout << endl;
+
+    CoffeeMachine coffee2(300, 5, 20, 350);
+    coffee2.showInfo();
+    coffee2.makeCoffee();
+
+    return 0;
 }
