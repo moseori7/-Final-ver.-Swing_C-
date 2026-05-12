@@ -1,0 +1,181 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Product { //Product 클래스는 상품에 대한 정보를 담고 있다. 상품 이름과 가격과 수량을 담고 있음!
+private:
+    string name;
+    int price;
+    int count;
+
+public:
+    Product(string n, int p, int c) { 
+        name = n;
+        price = p;
+        count = c;
+    }
+
+    string getName() {
+        return name;
+    }
+
+    int getPrice() {
+        return price;
+    }
+
+    int getCount() {
+        return count;
+    }
+
+    int getTotal() { //총 가격을 출력하기 위한 함수!
+        return price * count;
+    }
+
+    void printInfo() { //상품 정보를 알려주기 위해서..
+        cout << "- " << name << "[" << count << "개] : "
+            << getTotal() << "원 (단가 : " << price << "원)" << endl;
+    }
+};
+
+void printMenu() { //메뉴 출력해주기!
+    cout << "\n====== 쇼핑몰 장바구니 시스템 ======" << endl;
+    cout << "1. 장바구니 담기" << endl;
+    cout << "2. 장바구니 목록 보기" << endl;
+    cout << "3. 결제하기" << endl;
+    cout << "4. 전체 결제 내역 확인" << endl;
+    cout << "5. 프로그램 종료" << endl;
+    cout << ">> 메뉴 선택 : ";
+}
+
+void addProduct(vector<Product*>& cart) { //장바구니에 끝도 없이 물건을 추가해주기 위해서 벡터 사용!
+    string name;
+    int price;
+    int count;
+
+    cout << "\n[장바구니 담기]" << endl;
+    cout << "상품 이름 : ";
+    cin >> name;
+
+    cout << "가격 : ";
+    cin >> price;
+
+    cout << "수량 : ";
+    cin >> count;
+
+    Product* p = new Product(name, price, count); //객체 동적 생성!
+
+    cart.push_back(p); //vector에 상품 객체의 주소를 넣어줌
+
+    cout << "상품 추가 완료했습니다." << endl;
+}
+
+void showCart(vector<Product*>& cart) { // 내가 장바구니에 뭐담았는지 볼 수 있도록
+    cout << "\n-------- [장바구니 목록] --------" << endl;
+
+    if (cart.size() == 0) {
+        cout << "(장바구니에 담긴 상품이 없습니다.)" << endl;
+        cout << "--------------------------------" << endl;
+        return;
+    }
+
+    for (int i = 0; i < cart.size(); i++) {
+        cart[i]->printInfo();
+    }
+
+    cout << "--------------------------------" << endl;
+}
+
+void pay(vector<Product*>& cart, vector<Product*>& payList) {
+    cout << "\n-------- [결제 상세 내역] --------" << endl;
+
+    if (cart.size() == 0) {
+        cout << "장바구니에 담긴 상품이 없습니다." << endl;
+        return;
+    }
+
+    int total = 0;
+
+    for (int i = 0; i < cart.size(); i++) {
+        cart[i]->printInfo();
+        total += cart[i]->getTotal();
+    }
+
+    cout << "\n최종 결제 금액 : " << total << "원" << endl;
+
+    char answer;
+    cout << "결제하시겠습니까? (Y/N) : ";
+    cin >> answer;
+
+    if (answer == 'Y' || answer == 'y') {
+        cout << "결제가 완료되었습니다. 장바구니를 비웁니다." << endl;
+
+        for (int i = 0; i < cart.size(); i++) {
+            payList.push_back(cart[i]);
+        }
+
+
+        cart.clear();
+    }
+    else if (answer == 'N' || answer == 'n') {
+        cout << "결제가 취소되었습니다." << endl;
+    }
+    else {
+        cout << "잘못된 입력입니다. 결제가 취소됩니다." << endl;
+    }
+}
+
+void showPayList(vector<Product*>& payList) {
+    cout << "\n-------- [주문 상세 내역] --------" << endl;
+
+    if (payList.size() == 0) {
+        cout << "(결제 내역이 없습니다.)" << endl;
+        return;
+    }
+
+    for (int i = 0; i < payList.size(); i++) {
+        payList[i]->printInfo();
+    }
+}
+
+int main() {
+    vector<Product*> cart;
+    vector<Product*> payList;
+
+    int menu;
+
+    while (true) {
+        printMenu();
+        cin >> menu;
+
+        if (menu == 1) {
+            addProduct(cart);
+        }
+        else if (menu == 2) {
+            showCart(cart);
+        }
+        else if (menu == 3) {
+            pay(cart, payList);
+        }
+        else if (menu == 4) {
+            showPayList(payList);
+        }
+        else if (menu == 5) {
+            cout << "\n프로그램을 종료합니다." << endl;
+            break;
+        }
+        else {
+            cout << "잘못된 번호입니다. 1~5 사이만 입력해주세요." << endl;
+        }
+    }
+
+    for (int i = 0; i < cart.size(); i++) {
+        delete cart[i];
+    }
+
+    for (int i = 0; i < payList.size(); i++) {
+        delete payList[i];
+    }
+
+    return 0;
+}
