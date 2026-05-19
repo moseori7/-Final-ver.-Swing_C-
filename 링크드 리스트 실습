@@ -1,0 +1,77 @@
+// 카페 주문을 받아보자
+#include <iostream>
+#include <string>
+using namespace std;
+
+// 연결할 노드를 만들어보자
+template <typename T>
+struct Node {
+    T data; // 여기에 데이터 저장!
+    Node<T>* next; //여기에 다음 노드의 주소 저장! 그래서 지금 들어온 주문 다음에 들어올 주문을 연결하는 역할
+};
+
+// Order클래스를 템플릿으로 만들어보자 (클래스 템플릿)
+// 여기서 typename T는 클래스 자료형이 아직 정해지지 않았다는 것
+// 그러나 정해주어야 한다는 점을 알고 있기 때문에 main함수에서 구현을 하였다!
+template <typename T>
+class Order {
+public:
+    Order() {
+        head = NULL;
+        tail = NULL; //처음에는 아무 주문도 없으니까 다 일단 초기화시키기
+    }
+
+    ~Order() { //저번에 배운 소멸자다!
+        Node<T>* current = head;
+
+        while (current != NULL) { //현재 노드가 있는동안 계속 반복할 것
+            Node<T>* temp = current; //맨 처음 head 첫번째 노드무터 시작!
+            current = current->next; //삭제해버리기 전에 다음 노드로 이동해서 주소 잃어버리는 걸 방지!
+            delete temp; //그 후에 저장해놨던 노드를 삭제해준다.
+        }
+    }
+
+    void add(T menu) { //새로운 주문을 리스트 끝 부분에 추가해줌
+        Node<T>* newNode = new Node<T>; //새로운 노드 동적할당 및 생성
+        newNode->data = menu; //메뉴 이름 저장
+        newNode->next = NULL; //다음 노드가 없으니 null설정
+
+        if (head == NULL) { //만약 리스트가 비어있으면 head가 null상태니까 첫 주문이 들어오면 그 노드가 처음이자 마지막
+            head = newNode; //그래서 같은 노드를 가리킴
+            tail = newNode;
+        }
+        else { //근데 만약 주문이 있다? 라고 한다면 주문을 연결해야한다!
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    void show() { //주문 내역 출력을 해보아요
+        Node<T>* current = head; //head가 스타트
+
+        cout << "===== 카페 주문 리스트 =====" << endl;
+
+        while (current != NULL) {
+            cout << current->data << endl;
+            current = current->next;
+        }
+    }
+
+private:
+    Node<T>* head; //head는 첫번째 노드의 주소를 저장한다! 그래서 첫 번째 주문을 의미
+    Node<T>* tail; //tail은 마지막 노드의 주소를 저장한다! 그래서 마지막 주문을 의미
+};
+
+int main() {
+    Order<string>* orderList = new Order<string>; //아까 자료형 지정해줘야 한다던거 string으로 지정!
+
+    orderList->add("아메리카노");
+    orderList->add("카페라떼");
+    orderList->add("바닐라라떼");
+
+    orderList->show();
+
+    delete orderList;
+
+    return 0;
+}
